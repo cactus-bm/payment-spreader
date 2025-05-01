@@ -53,6 +53,17 @@ button:hover {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.input-form h2 {
+  margin-bottom: 20px;
+}
+
+.input-form form {
+  text-align: left;
+  max-width: 90%;
+  margin: 0 auto;
 }
 
 .journal-entries {
@@ -76,7 +87,7 @@ th {
 
 .csv-export {
   margin-bottom: 20px;
-  text-align: right;
+  text-align: center;
 }
 
 .validation-message {
