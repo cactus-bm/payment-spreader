@@ -1,5 +1,11 @@
 import React from 'react';
 
+// Format date from YYYY-MM-DD to DD/MM/YYYY
+const formatDate = (isoDate) => {
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+};
+
 const JournalEntries = ({ entries }) => {
   return (
     <div className="journal-entries">
@@ -19,7 +25,7 @@ const JournalEntries = ({ entries }) => {
           {entries.map((entry, index) => (
             <tr key={index}>
               <td>{entry.Narration}</td>
-              <td>{entry.Date}</td>
+              <td>{formatDate(entry.Date)}</td>
               <td>{entry.Description}</td>
               <td>{entry.AccountCode}</td>
               <td>{entry.TaxRate}</td>
