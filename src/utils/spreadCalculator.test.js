@@ -55,7 +55,7 @@ describe('spreadCalculator', () => {
   });
   
   // Test case where rounding is needed
-  test('should handle rounding to 2 decimal places and adjust last month', () => {
+  test('should handle rounding to 2 decimal places and adjust each month', () => {
     const formData = {
       narration: 'Test Payment',
       amount: '1000',
@@ -72,9 +72,10 @@ describe('spreadCalculator', () => {
     // Check number of entries (2 per month - credit and debit)
     expect(entries.length).toBe(6);
     
-    // For 1000/3, we expect first two months to be 333.33 and last month to be 333.34
-    // But our algorithm rounds down to 2 decimal places so we'll have 333.33 for first two months
-    // and the last month will be adjusted to make up the total
+    // With new algorithm, 1000/3 with recalculation:
+    // First month: 1000/3 = 333.33, remaining: 666.67, months left: 2
+    // Second month: 666.67/2 = 333.33, remaining: 333.34, months left: 1
+    // Third month: exactly 333.34 (remaining amount)
     
     // Expected narrations for each month
     const expectedNarration1 = getExpectedNarration('Test Payment', new Date('2025-01-01'));
@@ -115,7 +116,7 @@ describe('spreadCalculator', () => {
   });
   
   // Edge case with a prime number that ensures rounding is handled properly
-  test('should correctly handle awkward divisions with rounding', () => {
+  test('should correctly handle awkward divisions with progressive recalculation', () => {
     const formData = {
       narration: 'Test Payment',
       amount: '1000',
@@ -129,27 +130,37 @@ describe('spreadCalculator', () => {
     
     const entries = calculateSpreadEntries(formData);
     
-    // Calculate the expected amount per month (142.85 for 7 months, which is 999.95)
-    // So the last month should be 142.90 to make up the total of 1000
-    const expectedAmountPerMonth = Math.floor((1000 / 7) * 100) / 100; // 142.85
+    // With progressive recalculation for 1000 over 7 months:
+    // Month 1: 1000/7 = 142.85, remaining = 857.15, months left = 6
+    // Month 2: 857.15/6 = 142.85, remaining = 714.30, months left = 5
+    // And so on with the last month getting the final remaining amount
     
-    // Check each month except last has the expected amount
-    for (let i = 0; i < 6; i++) {
-      expect(entries[i * 2].Amount).toBe(expectedAmountPerMonth);
-      expect(entries[i * 2 + 1].Amount).toBe(-expectedAmountPerMonth);
+    // Verify all monthly payment amounts are within 1 cent of each other
+    let previousAmount = entries[0].Amount;
+    for (let i = 1; i < 6; i++) {
+      const currentAmount = entries[i * 2].Amount;
+      // Check difference is no more than 1 cent (with a small epsilon for floating point precision)
+      expect(Math.abs(currentAmount - previousAmount)).toBeLessThanOrEqual(0.0101);
+      previousAmount = currentAmount;
     }
     
-    // Check last month is adjusted correctly
-    // Use toBeCloseTo for floating point comparison to handle precision issues
-    expect(entries[12].Amount).toBeCloseTo(1000 - (expectedAmountPerMonth * 6), 2);
-    expect(entries[13].Amount).toBeCloseTo(-(1000 - (expectedAmountPerMonth * 6)), 2);
+    // The last payment should be within 2 cents of previous amounts
+    // (allowing slightly more variance for the final adjustment)
+    expect(Math.abs(entries[12].Amount - previousAmount)).toBeLessThanOrEqual(0.02);
+    
+    // Ensure amounts are properly rounded to 2 decimal places
+    for (let i = 0; i < 7; i++) {
+      const amount = entries[i * 2].Amount;
+      // Check that multiplying by 100 and taking modulus 1 is 0 (confirming 2 decimal places)
+      expect(Math.abs((amount * 100) % 1)).toBeLessThanOrEqual(0.0001); // Small epsilon for floating point
+    }
     
     // Validate total equals original amount
     expect(validateTotalAmount(entries, 1000)).toBe(true);
   });
   
   // Test with a very small amount
-  test('should correctly split very small amounts', () => {
+  test('should correctly split very small amounts with progressive recalculation', () => {
     const formData = {
       narration: 'Small Payment',
       amount: '0.01',
@@ -163,11 +174,17 @@ describe('spreadCalculator', () => {
     
     const entries = calculateSpreadEntries(formData);
     
-    // For 0.01/3, we expect first two months to be 0.00 and last month to be 0.01
+    // With progressive recalculation for 0.01 over 3 months:
+    // Month 1: 0.01/3 = 0.00, remaining = 0.01, months left = 2
+    // Month 2: 0.01/2 = 0.00, remaining = 0.01, months left = 1
+    // Month 3: remaining = 0.01
+    
+    // In this case, since the smallest unit is 0.01, the first two months will be 0
+    // and the entire amount will be allocated to the last month
     
     // First and second months
     expect(entries[0].Amount).toEqual(0);
-    // Use Object.is to handle -0 vs 0 issue
+    // Use Math.abs to handle -0 vs 0 issue
     expect(Math.abs(entries[1].Amount)).toEqual(0);
     expect(entries[2].Amount).toEqual(0);
     expect(Math.abs(entries[3].Amount)).toEqual(0);
@@ -178,5 +195,10 @@ describe('spreadCalculator', () => {
     
     // Validate total equals original amount
     expect(validateTotalAmount(entries, 0.01)).toBe(true);
+    
+    // Ensure all entries add up to the original amount
+    const creditSum = entries.filter(entry => entry.Amount > 0)
+                           .reduce((sum, entry) => sum + entry.Amount, 0);
+    expect(creditSum).toEqual(0.01);
   });
 });

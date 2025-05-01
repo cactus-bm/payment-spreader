@@ -18,11 +18,9 @@ export const calculateSpreadEntries = (formData) => {
   const totalAmount = parseFloat(amount);
   const numberOfMonths = parseInt(months);
   
-  // Calculate amount per month, rounded to 2 decimal places
-  let amountPerMonth = Math.floor((totalAmount / numberOfMonths) * 100) / 100;
-  
-  // Calculate the difference due to rounding that needs to be added to the last month
-  const roundingDifference = (totalAmount - (amountPerMonth * numberOfMonths)).toFixed(2);
+  // Track the remaining amount to be distributed
+  let remainingAmount = totalAmount;
+  let remainingMonths = numberOfMonths;
   
   // Create Date object from the receivedDate
   const startDate = new Date(receivedDate);
@@ -47,10 +45,17 @@ export const calculateSpreadEntries = (formData) => {
     const year = currentDate.getFullYear();
     const formattedNarration = `${narration} - ${fullMonthName} ${year}`;
     
-    // For the last month, adjust the amount to ensure the total is correct
-    let monthAmount = amountPerMonth;
-    if (i === numberOfMonths - 1 && parseFloat(roundingDifference) !== 0) {
-      monthAmount = parseFloat((amountPerMonth + parseFloat(roundingDifference)).toFixed(2));
+    // Calculate this month's amount based on remaining amount and months
+    let monthAmount;
+    
+    if (i === numberOfMonths - 1) {
+      // Last month gets whatever is remaining to ensure total is exact
+      monthAmount = parseFloat(remainingAmount.toFixed(2));
+    } else {
+      // For other months, recalculate based on remaining amount and months
+      monthAmount = Math.floor((remainingAmount / remainingMonths) * 100) / 100;
+      remainingAmount -= monthAmount;
+      remainingMonths--;
     }
     
     // Credit entry
