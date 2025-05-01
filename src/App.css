@@ -75,26 +75,38 @@ th {
 }
 
 .csv-export {
-  margin: 20px 0;
+  margin-bottom: 20px;
+  text-align: right;
 }
 
 .validation-message {
-  margin: 15px 0;
+  margin-top: 15px;
   padding: 10px;
   border-radius: 4px;
   font-weight: 500;
   background-color: #f8f9fa;
   border-left: 4px solid #4CAF50;
+  text-align: left;
+}
+
+.left-panel, .right-panel {
+  width: 100%;
 }
 
 @media (min-width: 768px) {
   main {
     flex-direction: row;
-    flex-wrap: wrap;
+    gap: 30px;
   }
 
-  .input-form, .journal-entries {
+  .left-panel {
     flex: 1;
     min-width: 300px;
+    max-width: 400px;
+  }
+
+  .right-panel {
+    flex: 2;
+    min-width: 500px;
   }
 }

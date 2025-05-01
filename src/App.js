@@ -32,13 +32,18 @@ function App() {
         <p>Spread payments over a period of time</p>
       </header>
       <main>
-        <InputForm onCalculate={handleCalculate} />
-        {journalEntries.length > 0 && (
-          <>
+        <div className="left-panel">
+          <InputForm onCalculate={handleCalculate} />
+          {journalEntries.length > 0 && (
             <div className="validation-message">{validationMessage}</div>
-            <JournalEntries entries={journalEntries} />
+          )}
+        </div>
+        
+        {journalEntries.length > 0 && (
+          <div className="right-panel">
             <CsvExport entries={journalEntries} />
-          </>
+            <JournalEntries entries={journalEntries} />
+          </div>
         )}
       </main>
     </div>
