@@ -1,6 +1,17 @@
 import { calculateSpreadEntries, validateTotalAmount } from './spreadCalculator';
 
 describe('spreadCalculator', () => {
+  // Helper function to get expected narration format
+  const getExpectedNarration = (baseNarration, date) => {
+    const testDate = new Date(date);
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const month = monthNames[testDate.getMonth()];
+    const year = testDate.getFullYear();
+    return `${baseNarration} - ${month} ${year}`;
+  };
   // Test case for even division with no rounding
   test('should correctly split amount with no rounding needed', () => {
     const formData = {
@@ -19,13 +30,24 @@ describe('spreadCalculator', () => {
     // Check number of entries (2 per month - credit and debit)
     expect(entries.length).toBe(20);
     
-    // Check each month's amount is 100.00
+    // Check each month's amount is 100.00 and narration is formatted correctly
     for (let i = 0; i < 10; i++) {
       const creditEntry = entries[i * 2];
       const debitEntry = entries[i * 2 + 1];
       
+      // Get expected date for this iteration
+      const expectedDate = new Date('2025-01-01');
+      expectedDate.setMonth(expectedDate.getMonth() + i);
+      const expectedNarration = getExpectedNarration('Test Payment', expectedDate);
+      
       expect(creditEntry.Amount).toBe(100);
       expect(debitEntry.Amount).toBe(-100);
+      
+      // Check narration and description format
+      expect(creditEntry.Narration).toBe(expectedNarration);
+      expect(creditEntry.Description).toBe(expectedNarration);
+      expect(debitEntry.Narration).toBe(expectedNarration);
+      expect(debitEntry.Description).toBe(expectedNarration);
     }
     
     // Validate total equals original amount
@@ -54,17 +76,34 @@ describe('spreadCalculator', () => {
     // But our algorithm rounds down to 2 decimal places so we'll have 333.33 for first two months
     // and the last month will be adjusted to make up the total
     
+    // Expected narrations for each month
+    const expectedNarration1 = getExpectedNarration('Test Payment', new Date('2025-01-01'));
+    const expectedNarration2 = getExpectedNarration('Test Payment', new Date('2025-02-01'));
+    const expectedNarration3 = getExpectedNarration('Test Payment', new Date('2025-03-01'));
+    
     // First month
     expect(entries[0].Amount).toBe(333.33);
     expect(entries[1].Amount).toBe(-333.33);
+    expect(entries[0].Narration).toBe(expectedNarration1);
+    expect(entries[0].Description).toBe(expectedNarration1);
+    expect(entries[1].Narration).toBe(expectedNarration1);
+    expect(entries[1].Description).toBe(expectedNarration1);
     
     // Second month
     expect(entries[2].Amount).toBe(333.33);
     expect(entries[3].Amount).toBe(-333.33);
+    expect(entries[2].Narration).toBe(expectedNarration2);
+    expect(entries[2].Description).toBe(expectedNarration2);
+    expect(entries[3].Narration).toBe(expectedNarration2);
+    expect(entries[3].Description).toBe(expectedNarration2);
     
     // Last month (adjusted to make up the difference)
     expect(entries[4].Amount).toBe(333.34);
     expect(entries[5].Amount).toBe(-333.34);
+    expect(entries[4].Narration).toBe(expectedNarration3);
+    expect(entries[4].Description).toBe(expectedNarration3);
+    expect(entries[5].Narration).toBe(expectedNarration3);
+    expect(entries[5].Description).toBe(expectedNarration3);
     
     // Validate total equals original amount
     expect(validateTotalAmount(entries, 1000)).toBe(true);

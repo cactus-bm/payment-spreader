@@ -29,13 +29,23 @@ export const calculateSpreadEntries = (formData) => {
   
   const journalEntries = [];
   
+  // Array of full month names
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
   // Create journal entries for each month
   for (let i = 0; i < numberOfMonths; i++) {
     const currentDate = new Date(startDate);
     currentDate.setMonth(startDate.getMonth() + i);
     
     const formattedDate = currentDate.toISOString().slice(0, 10);
-    const monthDescription = `Month ${i + 1} of ${numberOfMonths}`;
+    
+    // Get full month name and year for narration
+    const fullMonthName = monthNames[currentDate.getMonth()];
+    const year = currentDate.getFullYear();
+    const formattedNarration = `${narration} - ${fullMonthName} ${year}`;
     
     // For the last month, adjust the amount to ensure the total is correct
     let monthAmount = amountPerMonth;
@@ -45,9 +55,9 @@ export const calculateSpreadEntries = (formData) => {
     
     // Credit entry
     journalEntries.push({
-      Narration: narration,
+      Narration: formattedNarration,
       Date: formattedDate,
-      Description: `${monthDescription} - Credit`,
+      Description: formattedNarration, // Same as Narration
       AccountCode: creditAccount,
       TaxRate: creditTaxCode,
       Amount: monthAmount
@@ -55,9 +65,9 @@ export const calculateSpreadEntries = (formData) => {
     
     // Debit entry
     journalEntries.push({
-      Narration: narration,
+      Narration: formattedNarration,
       Date: formattedDate,
-      Description: `${monthDescription} - Debit`,
+      Description: formattedNarration, // Same as Narration
       AccountCode: debitAccount,
       TaxRate: debitTaxCode,
       Amount: -monthAmount // Negative for debit
