@@ -35,19 +35,45 @@ export const calculateSpreadEntries = (formData) => {
   
   // Get the day of the month from the start date
   const originalDay = startDate.getDate();
-  
   // Function to get the last day of a month
   const getLastDayOfMonth = (year, month) => {
-    // Month in JavaScript is 0-indexed, so we use month+1 for the next month, and day 0 means the last day of the previous month
-    return new Date(year, month + 1, 0).getDate();
+    if (month === 0) {
+      return 31;
+    } else if (month === 1) {
+      if (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)  ) {
+        return 29;
+      } else {
+        return 28;
+      }
+    } else if (month === 2) {
+      return 31;
+    } else if (month === 3) {
+      return 30;
+    } else if (month === 4) {
+      return 31;
+    } else if (month === 5) {
+      return 30;
+    } else if (month === 6) {
+      return 31;
+    } else if (month === 7) {
+      return 31;
+    } else if (month === 8) {
+      return 30;
+    } else if (month === 9) {
+      return 31;
+    } else if (month === 10) {
+      return 30;
+    } else if (month === 11) {
+      return 31;
+    }
   };
   
   // Function to create date with same day or last day of month if that day doesn't exist
   const getAdjustedDate = (year, month, desiredDay) => {
-    const lastDayOfMonth = getLastDayOfMonth(year, month);
+    const lastDayOfMonth = getLastDayOfMonth(year, month)
     const actualDay = Math.min(desiredDay, lastDayOfMonth);
-    const date = new Date(year, month, actualDay);
-    return date;
+    const oneIndexedMonth = month + 1;
+    return `${actualDay < 10 ? "0" : ""}${actualDay}/${oneIndexedMonth < 10 ? "0" : ""}${oneIndexedMonth}/${year}`;
   };
   
   // Create journal entries for each month
@@ -59,12 +85,9 @@ export const calculateSpreadEntries = (formData) => {
     // Create date with same day or last day of month if that day doesn't exist
     const currentDate = getAdjustedDate(targetYear, targetMonth, originalDay);
     
-    const formattedDate = currentDate.toISOString().slice(0, 10);
-    
     // Get full month name and year for narration
-    const fullMonthName = monthNames[currentDate.getMonth()];
-    const year = currentDate.getFullYear();
-    const formattedNarration = `${narration} - ${fullMonthName} ${year}`;
+    const fullMonthName = monthNames[targetMonth];
+    const formattedNarration = `${narration} - ${fullMonthName} ${targetYear}`;
     
     // Calculate this month's amount based on remaining amount and months
     let monthAmount;
@@ -82,7 +105,7 @@ export const calculateSpreadEntries = (formData) => {
     // Credit entry
     journalEntries.push({
       Narration: formattedNarration,
-      Date: formattedDate,
+      Date: currentDate,
       Description: formattedNarration, // Same as Narration
       AccountCode: creditAccount,
       TaxRate: creditTaxCode,
@@ -92,7 +115,7 @@ export const calculateSpreadEntries = (formData) => {
     // Debit entry
     journalEntries.push({
       Narration: formattedNarration,
-      Date: formattedDate,
+      Date: currentDate,
       Description: formattedNarration, // Same as Narration
       AccountCode: debitAccount,
       TaxRate: debitTaxCode,
