@@ -53,7 +53,7 @@ export const calculateSpreadEntries = (formData) => {
       monthAmount = parseFloat(remainingAmount.toFixed(2));
     } else {
       // For other months, recalculate based on remaining amount and months
-      monthAmount = Math.floor((remainingAmount / remainingMonths) * 100) / 100;
+      monthAmount = Math.round((remainingAmount / remainingMonths) * 100) / 100;
       remainingAmount -= monthAmount;
       remainingMonths--;
     }

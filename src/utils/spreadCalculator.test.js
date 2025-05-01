@@ -91,16 +91,16 @@ describe('spreadCalculator', () => {
     expect(entries[1].Description).toBe(expectedNarration1);
     
     // Second month
-    expect(entries[2].Amount).toBe(333.33);
-    expect(entries[3].Amount).toBe(-333.33);
+    expect(entries[2].Amount).toBe(333.34);
+    expect(entries[3].Amount).toBe(-333.34);
     expect(entries[2].Narration).toBe(expectedNarration2);
     expect(entries[2].Description).toBe(expectedNarration2);
     expect(entries[3].Narration).toBe(expectedNarration2);
     expect(entries[3].Description).toBe(expectedNarration2);
     
     // Last month (adjusted to make up the difference)
-    expect(entries[4].Amount).toBe(333.34);
-    expect(entries[5].Amount).toBe(-333.34);
+    expect(entries[4].Amount).toBe(333.33);
+    expect(entries[5].Amount).toBe(-333.33);
     expect(entries[4].Narration).toBe(expectedNarration3);
     expect(entries[4].Description).toBe(expectedNarration3);
     expect(entries[5].Narration).toBe(expectedNarration3);
@@ -186,12 +186,12 @@ describe('spreadCalculator', () => {
     expect(entries[0].Amount).toEqual(0);
     // Use Math.abs to handle -0 vs 0 issue
     expect(Math.abs(entries[1].Amount)).toEqual(0);
-    expect(entries[2].Amount).toEqual(0);
-    expect(Math.abs(entries[3].Amount)).toEqual(0);
+    expect(entries[2].Amount).toEqual(0.01);
+    expect(Math.abs(entries[3].Amount)).toEqual(0.01);
     
     // Last month (the entire amount)
-    expect(entries[4].Amount).toBe(0.01);
-    expect(entries[5].Amount).toBe(-0.01);
+    expect(entries[4].Amount).toBe(0);
+    expect(entries[5].Amount).toBe(-0);
     
     // Validate total equals original amount
     expect(validateTotalAmount(entries, 0.01)).toBe(true);
