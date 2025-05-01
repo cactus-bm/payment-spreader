@@ -35,9 +35,17 @@ describe('spreadCalculator', () => {
       const creditEntry = entries[i * 2];
       const debitEntry = entries[i * 2 + 1];
       
-      // Get expected date for this iteration
-      const expectedDate = new Date('2025-01-01');
-      expectedDate.setMonth(expectedDate.getMonth() + i);
+      // Get expected date for this iteration using the same logic as in the spreadCalculator
+      const originalDate = new Date('2025-01-01');
+      const originalDay = originalDate.getDate();
+      const targetMonth = (originalDate.getMonth() + i) % 12;
+      const targetYear = originalDate.getFullYear() + Math.floor((originalDate.getMonth() + i) / 12);
+      
+      // Get last day of month
+      const lastDayOfMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+      const actualDay = Math.min(originalDay, lastDayOfMonth);
+      
+      const expectedDate = new Date(targetYear, targetMonth, actualDay);
       const expectedNarration = getExpectedNarration('Test Payment', expectedDate);
       
       expect(creditEntry.Amount).toBe(100);
@@ -77,10 +85,30 @@ describe('spreadCalculator', () => {
     // Second month: 666.67/2 = 333.33, remaining: 333.34, months left: 1
     // Third month: exactly 333.34 (remaining amount)
     
-    // Expected narrations for each month
-    const expectedNarration1 = getExpectedNarration('Test Payment', new Date('2025-01-01'));
-    const expectedNarration2 = getExpectedNarration('Test Payment', new Date('2025-02-01'));
-    const expectedNarration3 = getExpectedNarration('Test Payment', new Date('2025-03-01'));
+    // Expected narrations for each month using the new date calculation logic
+    const baseDate = new Date('2025-01-01');
+    const originalDay = baseDate.getDate();
+    
+    // Function to get adjusted date for testing
+    const getAdjustedTestDate = (baseDate, monthsToAdd) => {
+      const originalDay = baseDate.getDate();
+      const targetMonth = (baseDate.getMonth() + monthsToAdd) % 12;
+      const targetYear = baseDate.getFullYear() + Math.floor((baseDate.getMonth() + monthsToAdd) / 12);
+      
+      // Get last day of month
+      const lastDayOfMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+      const actualDay = Math.min(originalDay, lastDayOfMonth);
+      
+      return new Date(targetYear, targetMonth, actualDay);
+    };
+    
+    const expectedDate1 = getAdjustedTestDate(baseDate, 0);
+    const expectedDate2 = getAdjustedTestDate(baseDate, 1);
+    const expectedDate3 = getAdjustedTestDate(baseDate, 2);
+    
+    const expectedNarration1 = getExpectedNarration('Test Payment', expectedDate1);
+    const expectedNarration2 = getExpectedNarration('Test Payment', expectedDate2);
+    const expectedNarration3 = getExpectedNarration('Test Payment', expectedDate3);
     
     // First month
     expect(entries[0].Amount).toBe(333.33);

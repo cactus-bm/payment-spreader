@@ -33,10 +33,31 @@ export const calculateSpreadEntries = (formData) => {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
   
+  // Get the day of the month from the start date
+  const originalDay = startDate.getDate();
+  
+  // Function to get the last day of a month
+  const getLastDayOfMonth = (year, month) => {
+    // Month in JavaScript is 0-indexed, so we use month+1 for the next month, and day 0 means the last day of the previous month
+    return new Date(year, month + 1, 0).getDate();
+  };
+  
+  // Function to create date with same day or last day of month if that day doesn't exist
+  const getAdjustedDate = (year, month, desiredDay) => {
+    const lastDayOfMonth = getLastDayOfMonth(year, month);
+    const actualDay = Math.min(desiredDay, lastDayOfMonth);
+    const date = new Date(year, month, actualDay);
+    return date;
+  };
+  
   // Create journal entries for each month
   for (let i = 0; i < numberOfMonths; i++) {
-    const currentDate = new Date(startDate);
-    currentDate.setMonth(startDate.getMonth() + i);
+    // Get the target month and year
+    const targetMonth = (startDate.getMonth() + i) % 12;
+    const targetYear = startDate.getFullYear() + Math.floor((startDate.getMonth() + i) / 12);
+    
+    // Create date with same day or last day of month if that day doesn't exist
+    const currentDate = getAdjustedDate(targetYear, targetMonth, originalDay);
     
     const formattedDate = currentDate.toISOString().slice(0, 10);
     
