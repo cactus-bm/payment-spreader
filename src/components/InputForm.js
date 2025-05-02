@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { TextField, Button, Typography, Box, Grid } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const InputForm = ({ onCalculate }) => {
   const [formData, setFormData] = useState({
@@ -19,6 +24,16 @@ const InputForm = ({ onCalculate }) => {
       [name]: value
     }));
   };
+  
+  const handleDateChange = (date) => {
+    if (date) {
+      const formattedDate = date.format('YYYY-MM-DD');
+      setFormData(prevData => ({
+        ...prevData,
+        receivedDate: formattedDate
+      }));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,110 +41,147 @@ const InputForm = ({ onCalculate }) => {
   };
 
   return (
-    <div className="input-form">
-      <h2>Enter Payment Details</h2>
+    <Box>
+      <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
+        Enter Payment Details
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="narration">Narration</label>
-          <input
-            type="text"
-            id="narration"
-            name="narration"
-            value={formData.narration}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="amount">Amount</label>
-          <input
-            type="number"
-            id="amount"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-            step="0.01"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="receivedDate">Date Received</label>
-          <input
-            type="date"
-            id="receivedDate"
-            name="receivedDate"
-            value={formData.receivedDate}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="months">Number of Months</label>
-          <input
-            type="number"
-            id="months"
-            name="months"
-            value={formData.months}
-            onChange={handleChange}
-            required
-            min="1"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="creditAccount">Credit Account</label>
-          <input
-            type="text"
-            id="creditAccount"
-            name="creditAccount"
-            value={formData.creditAccount}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="debitAccount">Debit Account</label>
-          <input
-            type="text"
-            id="debitAccount"
-            name="debitAccount"
-            value={formData.debitAccount}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="creditTaxCode">Credit Tax Code</label>
-          <input
-            type="text"
-            id="creditTaxCode"
-            name="creditTaxCode"
-            value={formData.creditTaxCode}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="debitTaxCode">Debit Tax Code</label>
-          <input
-            type="text"
-            id="debitTaxCode"
-            name="debitTaxCode"
-            value={formData.debitTaxCode}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit">Calculate Journal Entries</button>
+        <Grid container spacing={2}>
+          <Grid item size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              label="Narration"
+              id="narration"
+              name="narration"
+              value={formData.narration}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="Amount"
+              id="amount"
+              name="amount"
+              type="number"
+              value={formData.amount}
+              onChange={handleChange}
+              required
+              inputProps={{ step: "0.01" }}
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date Received"
+                value={formData.receivedDate ? dayjs(formData.receivedDate) : null}
+                onChange={handleDateChange}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    required: true,
+                    margin: "normal"
+                  }
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          
+          <Grid item size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              label="Number of Months"
+              id="months"
+              name="months"
+              type="number"
+              value={formData.months}
+              onChange={handleChange}
+              required
+              inputProps={{ min: "1" }}
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="Credit Account"
+              id="creditAccount"
+              name="creditAccount"
+              value={formData.creditAccount}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="Debit Account"
+              id="debitAccount"
+              name="debitAccount"
+              value={formData.debitAccount}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="Credit Tax Code"
+              id="creditTaxCode"
+              name="creditTaxCode"
+              value={formData.creditTaxCode}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label="Debit Tax Code"
+              id="debitTaxCode"
+              name="debitTaxCode"
+              value={formData.debitTaxCode}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12 }}>
+            <Box sx={{ mt: 2 }}>
+              <Button 
+                type="submit" 
+                variant="contained" 
+                color="primary" 
+                size="large"
+                fullWidth
+              >
+                Calculate Journal Entries
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
       </form>
-    </div>
+    </Box>
   );
 };
 

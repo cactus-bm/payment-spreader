@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
-import './App.css';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CssBaseline, Container, Typography, Box, Paper, Grid, Alert } from '@mui/material';
 import InputForm from './components/InputForm';
 import JournalEntries from './components/JournalEntries';
 import CsvExport from './components/CsvExport';
 import { calculateSpreadEntries, validateTotalAmount } from './utils/spreadCalculator';
 
+// Create a theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#4caf50',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+});
+
 function App() {
   const [journalEntries, setJournalEntries] = useState([]);
-  const [validationMessage, setValidationMessage] = useState('');
+  const [validationMessage, setValidationMessage] = useState({ text: '', severity: 'success' });
 
   const handleCalculate = (formData) => {
     const entries = calculateSpreadEntries(formData);
@@ -17,36 +30,66 @@ function App() {
     const isValid = validateTotalAmount(entries, totalAmount);
     
     if (isValid) {
-      setValidationMessage(`✅ Validation passed: All entries sum to the original amount of ${totalAmount.toFixed(2)}`);
+      setValidationMessage({
+        text: `All entries sum to the original amount of ${totalAmount.toFixed(2)}`,
+        severity: 'success'
+      });
     } else {
-      setValidationMessage(`❌ Validation failed: The sum of entries does not equal ${totalAmount.toFixed(2)}`);
+      setValidationMessage({
+        text: `The sum of entries does not equal ${totalAmount.toFixed(2)}`,
+        severity: 'error'
+      });
     }
     
     setJournalEntries(entries);
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Payment Spreader</h1>
-        <p>Spread payments over a period of time</p>
-      </header>
-      <main>
-        <div className="left-panel">
-          <InputForm onCalculate={handleCalculate} />
-          {journalEntries.length > 0 && (
-            <div className="validation-message">{validationMessage}</div>
-          )}
-        </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" component="h1" gutterBottom>
+            Payment Spreader
+          </Typography>
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            Spread payments over a period of time
+          </Typography>
+        </Box>
         
-        {journalEntries.length > 0 && (
-          <div className="right-panel">
-            <CsvExport entries={journalEntries} />
-            <JournalEntries entries={journalEntries} />
-          </div>
-        )}
-      </main>
-    </div>
+        <Grid container spacing={3}>
+          <Grid item size={{
+            xs: 12,
+            md: 4
+          }}>
+            <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+              <InputForm onCalculate={handleCalculate} />
+              {journalEntries.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Alert severity={validationMessage.severity}>
+                    {validationMessage.text}
+                  </Alert>
+                </Box>
+              )}
+            </Paper>
+          </Grid>
+          
+          {journalEntries.length > 0 && (
+            <Grid item size={{
+              xs: 12,
+              md: 8
+            }}>
+              <Paper elevation={3} sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                  <CsvExport entries={journalEntries} />
+                </Box>
+                <JournalEntries entries={journalEntries} />
+              </Paper>
+            </Grid>
+          )}
+        </Grid>
+      </Container>
+    </ThemeProvider>
   );
 }
 

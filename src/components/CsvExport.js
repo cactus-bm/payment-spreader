@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from '@mui/material';
+import { Download as DownloadIcon } from '@mui/icons-material';
 import { stringify } from 'csv-stringify/browser/esm/sync';
 
 const CsvExport = ({ entries }) => {
@@ -20,9 +22,14 @@ const CsvExport = ({ entries }) => {
   };
 
   return (
-    <div className="csv-export">
-      <button onClick={generateCsv}>Download CSV</button>
-    </div>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={generateCsv}
+      startIcon={<DownloadIcon />}
+    >
+      Download CSV
+    </Button>
   );
 };
 
