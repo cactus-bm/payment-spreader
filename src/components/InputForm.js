@@ -77,7 +77,23 @@ const InputForm = ({ onCalculate }) => {
             />
           </Grid>
           
-          <Grid item size={{ xs: 12, sm: 6 }}>
+          <Grid item size={{ xs: 12, sm:6 }}>
+            <TextField
+              fullWidth
+              label="Number of Months"
+              id="months"
+              name="months"
+              type="number"
+              value={formData.months}
+              onChange={handleChange}
+              required
+              inputProps={{ min: "1" }}
+              variant="outlined"
+              margin="normal"
+            />
+          </Grid>
+          
+          <Grid item size={{ xs: 12 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Date Received"
@@ -92,22 +108,6 @@ const InputForm = ({ onCalculate }) => {
                 }}
               />
             </LocalizationProvider>
-          </Grid>
-          
-          <Grid item size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              label="Number of Months"
-              id="months"
-              name="months"
-              type="number"
-              value={formData.months}
-              onChange={handleChange}
-              required
-              inputProps={{ min: "1" }}
-              variant="outlined"
-              margin="normal"
-            />
           </Grid>
           
           <Grid item size={{ xs: 12, sm: 6 }}>
