@@ -4,14 +4,14 @@ import CsvExport from './CsvExport';
 
 const JournalEntries = ({ entries }) => {
   return (
-    <Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Typography variant="h5">
           Journal Entries
         </Typography>
         {entries.length > 0 && <CsvExport entries={entries} />}
       </Stack>
-      <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+      <TableContainer component={Paper} sx={{ flexGrow: 1, overflow: 'auto' }}>
         <Table stickyHeader aria-label="journal entries table">
           <TableHead>
             <TableRow>

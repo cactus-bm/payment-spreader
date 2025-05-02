@@ -78,7 +78,7 @@ function App() {
               xs: 12,
               md: 8
             }}>
-              <Paper elevation={3} sx={{ p: 3 }}>
+              <Paper elevation={3} sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
                 <JournalEntries entries={journalEntries} />
               </Paper>
             </Grid>
