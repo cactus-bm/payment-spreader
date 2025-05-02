@@ -3,7 +3,6 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Container, Typography, Box, Paper, Grid, Alert } from '@mui/material';
 import InputForm from './components/InputForm';
 import JournalEntries from './components/JournalEntries';
-import CsvExport from './components/CsvExport';
 import { calculateSpreadEntries, validateTotalAmount } from './utils/spreadCalculator';
 
 // Create a theme
@@ -80,9 +79,6 @@ function App() {
               md: 8
             }}>
               <Paper elevation={3} sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                  <CsvExport entries={journalEntries} />
-                </Box>
                 <JournalEntries entries={journalEntries} />
               </Paper>
             </Grid>

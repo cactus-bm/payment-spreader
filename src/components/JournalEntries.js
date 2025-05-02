@@ -1,12 +1,16 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, Stack } from '@mui/material';
+import CsvExport from './CsvExport';
 
 const JournalEntries = ({ entries }) => {
   return (
     <Box>
-      <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-        Journal Entries
-      </Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+        <Typography variant="h5">
+          Journal Entries
+        </Typography>
+        {entries.length > 0 && <CsvExport entries={entries} />}
+      </Stack>
       <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="journal entries table">
           <TableHead>
