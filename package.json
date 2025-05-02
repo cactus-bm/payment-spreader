@@ -1,5 +1,5 @@
 {
-  "name": "zero-spreader",
+  "name": "payment-spreader",
   "version": "1.0.0",
   "main": "index.js",
   "description": "Application to spread payments over a period of time",
