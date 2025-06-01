@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Grid } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -14,7 +14,8 @@ const InputForm = ({ onCalculate }) => {
     creditAccount: '',
     debitAccount: '',
     creditTaxCode: '',
-    debitTaxCode: ''
+    debitTaxCode: '',
+    country: 'USA'
   });
 
   const handleChange = (e) => {
@@ -164,6 +165,24 @@ const InputForm = ({ onCalculate }) => {
               variant="outlined"
               margin="normal"
             />
+          </Grid>
+          
+          <Grid item size={{ xs: 12 }}>
+            <FormControl component="fieldset" sx={{ mt: 2 }}>
+              <FormLabel component="legend">Country</FormLabel>
+              <RadioGroup
+                row
+                aria-label="country"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+              >
+                <FormControlLabel value="USA" control={<Radio />} label="USA" />
+                <FormControlLabel value="Bermuda" control={<Radio />} label="Bermuda" />
+                <FormControlLabel value="Canada" control={<Radio />} label="Canada" />
+                <FormControlLabel value="UK" control={<Radio />} label="UK" />
+              </RadioGroup>
+            </FormControl>
           </Grid>
           
           <Grid item size={{ xs: 12 }}>
