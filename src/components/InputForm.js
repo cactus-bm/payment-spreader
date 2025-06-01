@@ -4,6 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import 'dayjs/locale/en';
 
 const InputForm = ({ onCalculate }) => {
   const [formData, setFormData] = useState({
@@ -95,11 +96,12 @@ const InputForm = ({ onCalculate }) => {
           </Grid>
           
           <Grid item size={{ xs: 12 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
               <DatePicker
                 label="Date Received"
                 value={formData.receivedDate ? dayjs(formData.receivedDate) : null}
                 onChange={handleDateChange}
+                format="MMM D, YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
