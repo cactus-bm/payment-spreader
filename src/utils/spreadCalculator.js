@@ -12,7 +12,8 @@ export const calculateSpreadEntries = (formData) => {
     creditAccount,
     debitAccount,
     creditTaxCode,
-    debitTaxCode
+    debitTaxCode,
+    country
   } = formData;
 
   const totalAmount = parseFloat(amount);
@@ -73,7 +74,15 @@ export const calculateSpreadEntries = (formData) => {
     const lastDayOfMonth = getLastDayOfMonth(year, month)
     const actualDay = Math.min(desiredDay, lastDayOfMonth);
     const oneIndexedMonth = month + 1;
-    return `${actualDay < 10 ? "0" : ""}${actualDay}/${oneIndexedMonth < 10 ? "0" : ""}${oneIndexedMonth}/${year}`;
+    
+    // Format the date based on country selection
+    if (country === 'USA') {
+      // MM/DD/YYYY format for USA
+      return `${oneIndexedMonth < 10 ? "0" : ""}${oneIndexedMonth}/${actualDay < 10 ? "0" : ""}${actualDay}/${year}`;
+    } else {
+      // DD/MM/YYYY format for all other countries
+      return `${actualDay < 10 ? "0" : ""}${actualDay}/${oneIndexedMonth < 10 ? "0" : ""}${oneIndexedMonth}/${year}`;
+    }
   };
   
   // Create journal entries for each month
@@ -109,7 +118,9 @@ export const calculateSpreadEntries = (formData) => {
       Description: formattedNarration, // Same as Narration
       AccountCode: creditAccount,
       TaxRate: creditTaxCode,
-      Amount: monthAmount
+      Amount: monthAmount,
+      _rawDate: { day: originalDay, month: targetMonth, year: targetYear }, // Store raw date data for processing
+      _country: country // Store country for reference
     });
     
     // Debit entry
@@ -119,7 +130,9 @@ export const calculateSpreadEntries = (formData) => {
       Description: formattedNarration, // Same as Narration
       AccountCode: debitAccount,
       TaxRate: debitTaxCode,
-      Amount: -monthAmount // Negative for debit
+      Amount: -monthAmount, // Negative for debit
+      _rawDate: { day: originalDay, month: targetMonth, year: targetYear }, // Store raw date data for processing
+      _country: country // Store country for reference
     });
   }
   
