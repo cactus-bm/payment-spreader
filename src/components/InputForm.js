@@ -136,7 +136,7 @@ const InputForm = ({ onCalculate }) => {
           
           <Grid item size={{ xs: 12 }}>
             <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
-              <strong>DEAD CLIC Mnemonic:</strong> Remember the accounting rule - <strong>D</strong>ebits increase <strong>E</strong>xpenses, <strong>A</strong>ssets, and <strong>D</strong>rawings; <strong>C</strong>redits increase <strong>L</strong>iabilities, <strong>I</strong>ncome, and <strong>C</strong>apital.
+              The Credit Account is the one being added to and the Debit Account is the one being subtracted from.
             </Typography>
           </Grid>
           
