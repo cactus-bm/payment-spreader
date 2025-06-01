@@ -5,7 +5,14 @@ import { stringify } from 'csv-stringify/browser/esm/sync';
 
 const CsvExport = ({ entries }) => {
   const generateCsv = () => {
-    const csvContent = stringify(entries, {
+    // Create a copy of entries to avoid modifying the original data
+    const entriesForExport = entries.map(entry => {
+      // Remove internal fields before export
+      const { _rawDate, _country, ...exportEntry } = entry;
+      return exportEntry;
+    });
+    
+    const csvContent = stringify(entriesForExport, {
       header: true,
       columns: ['Narration', 'Date', 'Description', 'AccountCode', 'TaxRate', 'Amount']
     });
