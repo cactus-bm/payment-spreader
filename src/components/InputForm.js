@@ -122,7 +122,7 @@ const InputForm = ({ onCalculate }) => {
                 label="Date Received"
                 value={formData.receivedDate ? dayjs(formData.receivedDate) : null}
                 onChange={handleDateChange}
-                format="MMM d, YYYY"
+                format="MMM DD, YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -132,6 +132,12 @@ const InputForm = ({ onCalculate }) => {
                 }}
               />
             </LocalizationProvider>
+          </Grid>
+          
+          <Grid item size={{ xs: 12 }}>
+            <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+              <strong>DEAD CLIC Mnemonic:</strong> Remember the accounting rule - <strong>D</strong>ebits increase <strong>E</strong>xpenses, <strong>A</strong>ssets, and <strong>D</strong>rawings; <strong>C</strong>redits increase <strong>L</strong>iabilities, <strong>I</strong>ncome, and <strong>C</strong>apital.
+            </Typography>
           </Grid>
           
           <Grid item size={{ xs: 12, sm: 6 }}>
